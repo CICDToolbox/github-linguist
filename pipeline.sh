@@ -17,25 +17,55 @@ set -Eeuo pipefail
 # -------------------------------------------------------------------------------- #
 # Global Variables                                                                 #
 # -------------------------------------------------------------------------------- #
+# INSTALL_PACKAGE - The name of the package to install.                            #
+# INSTALL_COMMAND - The command to execute to do the install.                      #
+# TEST_COMMAND - The command to execute to perform the test.                       #
+# FILE_TYPE_SEARCH_PATTERN - The pattern used to match file types.                 #
+# FILE_NAME_SEARCH_PATTERN - The pattern used to match file names.                 #
 # EXIT_VALUE - Used to store the script exit value - adjusted by the fail().       #
+# CURRENT_STAGE - The current stage used for the reporting output.                 #
 # -------------------------------------------------------------------------------- #
 
 INSTALL_PACKAGE='github-linguist'
+INSTALL_COMMAND="gem install --silent ${INSTALL_PACKAGE}"
+
 TEST_COMMAND='github-linguist --breakdown'
+#FILE_TYPE_SEARCH_PATTERN='unused'
+#FILE_NAME_SEARCH_PATTERN='unused'
+
 EXIT_VALUE=0
+CURRENT_STAGE=0
 
 # -------------------------------------------------------------------------------- #
-# Install                                                                          #
+# Install Prerequisites                                                            #
 # -------------------------------------------------------------------------------- #
 # Install the required tooling.                                                    #
 # -------------------------------------------------------------------------------- #
 
 function install_prerequisites
 {
-    gem install --silent "${INSTALL_PACKAGE}"
+    stage "Install Prerequisites"
 
+    if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
+        success "${INSTALL_COMMAND}"
+    else
+        fail "${INSTALL_COMMAND}" "${errors}" true
+        if [[ "${EXIT_ON_INSTALL_FAILURE}" == true ]]; then
+            exit $EXIT_VALUE
+        fi
+    fi
+}
+
+# -------------------------------------------------------------------------------- #
+# Get Version Information                                                          #
+# -------------------------------------------------------------------------------- #
+# Get the current version of the required tool.                                    #
+# -------------------------------------------------------------------------------- #
+
+function get_version_information
+{
     VERSION=$(gem list | grep "^${INSTALL_PACKAGE} " | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
-    BANNER="Scanning all files with ${INSTALL_PACKAGE} (version: ${VERSION})"
+    BANNER="Run ${INSTALL_PACKAGE} (v${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -50,19 +80,68 @@ function scan_files()
 }
 
 # -------------------------------------------------------------------------------- #
-# Center Text                                                                      #
+# Handle Parameters                                                                #
 # -------------------------------------------------------------------------------- #
-# Center the given string on the screen. Part of the report generation.            #
+# Handle any parameters from the pipeline.                                         #
 # -------------------------------------------------------------------------------- #
 
-function center_text()
+function handle_parameters
+{
+    stage "Parameters"
+
+    if [[ -n "${EXIT_ON_INSTALL_FAILURE-}" ]]; then
+        if [[ "${EXIT_ON_INSTALL_FAILURE}" != true ]]; then
+            EXIT_ON_INSTALL_FAILURE=false
+            echo " Exit on Install Failure: false"
+        else
+            EXIT_ON_INSTALL_FAILURE=true
+            echo " Exit on Install Failure: true"
+        fi
+    else
+        EXIT_ON_INSTALL_FAILURE=false
+        echo " Exit on Install Failure: false"
+    fi
+}
+
+# -------------------------------------------------------------------------------- #
+# Success                                                                          #
+# -------------------------------------------------------------------------------- #
+# Show the user that the processing of a specific file was successful.             #
+# -------------------------------------------------------------------------------- #
+
+function success()
 {
     local message="${1:-}"
 
-    textsize=${#message}
-    span=$(((screen_width + textsize) / 2))
+    if [[ -n "${message}" ]]; then
+        printf ' [  %s%sOK%s  ] %s\n' "${bold}" "${success}" "${normal}" "${message}"
+    fi
+}
 
-    printf '%*s\n' "${span}" "${message}"
+# -------------------------------------------------------------------------------- #
+# Fail                                                                             #
+# -------------------------------------------------------------------------------- #
+# Show the user that the processing of a specific file failed and adjust the       #
+# EXIT_VALUE to record this.                                                       #
+# -------------------------------------------------------------------------------- #
+
+function fail()
+{
+    local message="${1:-}"
+    local errors="${2:-}"
+    local override="${3:-}"
+
+    if [[ -n "${message}" ]]; then
+        printf ' [ %s%sFAIL%s ] %s\n' "${bold}" "${error}" "${normal}" "${message}"
+    fi
+
+    if [[ "${SHOW_ERRORS}" == true ]] || [[ "${override}" == true ]] ; then
+        if [[ -n "${errors}" ]]; then
+            echo " ${errors}"
+        fi
+    fi
+
+    EXIT_VALUE=1
 }
 
 # -------------------------------------------------------------------------------- #
@@ -77,27 +156,49 @@ function draw_line
 }
 
 # -------------------------------------------------------------------------------- #
-# Header                                                                           #
+# Align Right                                                                      #
 # -------------------------------------------------------------------------------- #
-# Draw the report header on the screen. Part of the report generation.             #
+# Draw text alined to the right hand side of the screen.                           #
 # -------------------------------------------------------------------------------- #
 
-function header
+function align_right()
 {
-    draw_line
-    center_text "${BANNER}"
-    draw_line
+    local message="${1:-}"
+    local offset="${2:-2}"
+    local width=$screen_width
+
+    local textsize=${#message}
+    local left_line='-' left_width=$(( width - (textsize + offset + 2) ))
+    local right_line='-' right_width=${offset}
+
+    while ((${#left_line} < left_width)); do left_line+="$left_line"; done
+    while ((${#right_line} < right_width)); do right_line+="$right_line"; done
+
+    printf '%s %s %s\n' "${left_line:0:left_width}" "${1}" "${right_line:0:right_width}"
 }
 
 # -------------------------------------------------------------------------------- #
-# Footer                                                                           #
+# Stage                                                                            #
+# -------------------------------------------------------------------------------- #
+# Set the current stage number and display the message.                            #
+# -------------------------------------------------------------------------------- #
+
+function stage()
+{
+    message=${1:-}
+
+    CURRENT_STAGE=$((CURRENT_STAGE + 1))
+
+    align_right "Stage ${CURRENT_STAGE} - ${message}"
+}
+
 # -------------------------------------------------------------------------------- #
 # Draw the report footer on the screen. Part of the report generation.             #
 # -------------------------------------------------------------------------------- #
 
 function footer
 {
-    draw_line
+    stage 'Complete'
 }
 
 # -------------------------------------------------------------------------------- #
@@ -110,7 +211,11 @@ function setup
 {
     export TERM=xterm
 
-    screen_width=$(tput cols)
+    screen_width=98
+    bold="$(tput bold)"
+    normal="$(tput sgr0)"
+    error="$(tput setaf 1)"
+    success="$(tput setaf 2)"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -120,8 +225,10 @@ function setup
 # -------------------------------------------------------------------------------- #
 
 setup
+handle_parameters
 install_prerequisites
-header
+get_version_information
+stage "${BANNER}"
 scan_files
 footer
 

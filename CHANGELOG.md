@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 
 This changelog was automatically generated using [Caretaker](https://github.com/DevelopersToolbox/caretaker) by [Wolf Software](https://github.com/WolfSoftware)
 
-### [v0.1.0](https://github.com/CICDToolbox/github-linguist/releases/v0.1.0)
+### [Unreleased](https://github.com/CICDToolbox/github-linguist/compare/v0.1.0...HEAD)
 
-> Released on October, 1st 2021
+- update [`[head]`](https://github.com/CICDToolbox/github-linguist/commit/)
 
-- The initial commit [`[head]`](https://github.com/CICDToolbox/github-linguist/commit/)
+- The initial commit [`[7139a40]`](https://github.com/CICDToolbox/github-linguist/commit/7139a402c61003d84c8209893bdb5a682f2e5c92)
 
