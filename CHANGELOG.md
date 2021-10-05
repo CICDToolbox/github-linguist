@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/github-linguist/compare/v0.1.0...HEAD)
 
-- update [`[head]`](https://github.com/CICDToolbox/github-linguist/commit/)
+- Move logo to cdn [`[head]`](https://github.com/CICDToolbox/github-linguist/commit/)
+
+- update [`[cf93785]`](https://github.com/CICDToolbox/github-linguist/commit/cf93785cbb6d2da650885175948b104673b2d9a5)
 
 - update [`[0b7b40b]`](https://github.com/CICDToolbox/github-linguist/commit/0b7b40b736f1e91929ae6f4d37bda71c610507de)
 

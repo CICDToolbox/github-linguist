@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/WolfSoftware">
-        <img src="https://raw.githubusercontent.com/WolfSoftware/branding/master/images/general/banners/64/black-and-white.png" alt="Wolf Software Logo" />
+        <img src="https://cdn.wolfsoftware.com/assets/images/general/banners/64/black-and-white.png" alt="Wolf Software Logo" />
     </a>
     <br />
     <a href="https://github.com/CICDToolbox/github-linguist/actions/workflows/pipeline.yml">
