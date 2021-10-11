@@ -52,9 +52,7 @@ function install_prerequisites
             success "${INSTALL_COMMAND}"
         else
             fail "${INSTALL_COMMAND}" "${errors}" true
-            if [[ "${EXIT_ON_INSTALL_FAILURE}" == true ]]; then
-                exit $EXIT_VALUE
-            fi
+            exit $EXIT_VALUE
         fi
     else
         success "${INSTALL_PACKAGE} is alredy installed"
@@ -93,19 +91,6 @@ function scan_files()
 function handle_parameters
 {
     stage "Parameters"
-
-    if [[ -n "${EXIT_ON_INSTALL_FAILURE-}" ]]; then
-        if [[ "${EXIT_ON_INSTALL_FAILURE}" != true ]]; then
-            EXIT_ON_INSTALL_FAILURE=false
-            echo " Exit on Install Failure: false"
-        else
-            EXIT_ON_INSTALL_FAILURE=true
-            echo " Exit on Install Failure: true"
-        fi
-    else
-        EXIT_ON_INSTALL_FAILURE=false
-        echo " Exit on Install Failure: false"
-    fi
 }
 
 # -------------------------------------------------------------------------------- #
@@ -230,7 +215,7 @@ function setup
 # -------------------------------------------------------------------------------- #
 
 setup
-handle_parameters
+#handle_parameters
 install_prerequisites
 get_version_information
 stage "${BANNER}"
