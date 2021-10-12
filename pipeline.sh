@@ -51,7 +51,7 @@ function install_prerequisites
         if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
             success "${INSTALL_COMMAND}"
         else
-            fail "${INSTALL_COMMAND}" "${errors}" true
+            fail "${INSTALL_COMMAND}" "${errors}"
             exit $EXIT_VALUE
         fi
     else
@@ -119,7 +119,6 @@ function fail()
 {
     local message="${1:-}"
     local errors="${2:-}"
-    local override="${3:-}"
 
     if [[ -n "${message}" ]]; then
         printf ' [ %s%sFAIL%s ] %s\n' "${bold}" "${error}" "${normal}" "${message}"
