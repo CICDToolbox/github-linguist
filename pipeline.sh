@@ -30,6 +30,7 @@ GEM_NAME='github-linguist'
 INSTALL_COMMAND="gem install --quiet ${GEM_NAME}"
 
 TEST_COMMAND='github-linguist'
+TEST_FLAGS='--breakdown'
 #FILE_TYPE_SEARCH_PATTERN='unused'
 #FILE_NAME_SEARCH_PATTERN='unused'
 
@@ -79,7 +80,7 @@ function get_version_information
 
 function scan_files()
 {
-    $TEST_COMMAND --breakdown
+    $TEST_COMMAND $TEST_FLAGS
 }
 
 # -------------------------------------------------------------------------------- #
