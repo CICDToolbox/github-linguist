@@ -125,10 +125,8 @@ function fail()
         printf ' [ %s%sFAIL%s ] %s\n' "${bold}" "${error}" "${normal}" "${message}"
     fi
 
-    if [[ "${SHOW_ERRORS}" == true ]] || [[ "${override}" == true ]] ; then
-        if [[ -n "${errors}" ]]; then
-            echo " ${errors}"
-        fi
+    if [[ -n "${errors}" ]]; then
+        echo " ${errors}"
     fi
 
     EXIT_VALUE=1
