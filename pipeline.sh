@@ -26,8 +26,8 @@ set -Eeuo pipefail
 # CURRENT_STAGE - The current stage used for the reporting output.                 #
 # -------------------------------------------------------------------------------- #
 
-INSTALL_PACKAGE='github-linguist'
-INSTALL_COMMAND="gem install --silent ${INSTALL_PACKAGE}"
+INSTALL_PACKAGE='github-linguist22'
+INSTALL_COMMAND="gem install --quiet ${INSTALL_PACKAGE}"
 
 TEST_COMMAND='github-linguist --breakdown'
 #FILE_TYPE_SEARCH_PATTERN='unused'
