@@ -17,7 +17,7 @@ set -Eeuo pipefail
 # -------------------------------------------------------------------------------- #
 # Global Variables                                                                 #
 # -------------------------------------------------------------------------------- #
-# INSTALL_PACKAGE - The name of the package to install.                            #
+# GEM_NAME - The name of the Ruby Gem to install.                                  #
 # INSTALL_COMMAND - The command to execute to do the install.                      #
 # TEST_COMMAND - The command to execute to perform the test.                       #
 # FILE_TYPE_SEARCH_PATTERN - The pattern used to match file types.                 #
@@ -26,10 +26,10 @@ set -Eeuo pipefail
 # CURRENT_STAGE - The current stage used for the reporting output.                 #
 # -------------------------------------------------------------------------------- #
 
-INSTALL_PACKAGE='github-linguist'
-INSTALL_COMMAND="gem install --quiet ${INSTALL_PACKAGE}"
+GEM_NAME='github-linguist'
+INSTALL_COMMAND="gem install --quiet ${GEM_NAME}"
 
-TEST_COMMAND='github-linguist --breakdown'
+TEST_COMMAND='github-linguist'
 #FILE_TYPE_SEARCH_PATTERN='unused'
 #FILE_NAME_SEARCH_PATTERN='unused'
 
@@ -46,7 +46,7 @@ function install_prerequisites
 {
     stage "Install Prerequisites"
 
-    if ! command -v ${INSTALL_PACKAGE} &> /dev/null
+    if ! command -v ${TEST_COMMAND} &> /dev/null
     then
         if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
             success "${INSTALL_COMMAND}"
@@ -55,7 +55,7 @@ function install_prerequisites
             exit $EXIT_VALUE
         fi
     else
-        success "${INSTALL_PACKAGE} is alredy installed"
+        success "${TEST_COMMAND} is alredy installed"
     fi
 }
 
@@ -67,8 +67,8 @@ function install_prerequisites
 
 function get_version_information
 {
-    VERSION=$(gem list | grep "^${INSTALL_PACKAGE} " | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
-    BANNER="Run ${INSTALL_PACKAGE} (v${VERSION})"
+    VERSION=$(gem list | grep "^${GEM_NAME} " | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+    BANNER="Run ${TEST_COMMAND} (v${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -79,7 +79,7 @@ function get_version_information
 
 function scan_files()
 {
-    $TEST_COMMAND
+    $TEST_COMMAND --breakdown
 }
 
 # -------------------------------------------------------------------------------- #
