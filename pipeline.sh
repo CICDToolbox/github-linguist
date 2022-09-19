@@ -127,7 +127,13 @@ function fail()
     fi
 
     if [[ -n "${errors}" ]]; then
-        echo " ${errors}"
+        echo
+        mapfile -t error_array <<< "${errors}"
+        for err in "${error_array[@]}"
+        do
+            echo -e "          ${err}"
+        done
+        echo
     fi
 
     EXIT_VALUE=1

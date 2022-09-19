@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/github-linguist/compare/v0.1.0...HEAD)
 
-- New logo [`[head]`](https://github.com/CICDToolbox/github-linguist/commit/)
+- Make errors easier to see and default to showing errors [`[head]`](https://github.com/CICDToolbox/github-linguist/commit/)
+
+- New logo [`[ed24848]`](https://github.com/CICDToolbox/github-linguist/commit/ed24848e3044cd4235d7faf3b731f670aecc653e)
 
 - New logo [`[5393fc3]`](https://github.com/CICDToolbox/github-linguist/commit/5393fc38937b9708e348ef35a2609c715196da1d)
 
